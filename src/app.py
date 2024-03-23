@@ -14,6 +14,9 @@ CORS(app)
 
 # create the jackson family object
 jackson_family = FamilyStructure("Jackson")
+# class Family ():
+    
+
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
@@ -37,6 +40,12 @@ def handle_hello():
 
 
     return jsonify(response_body), 200
+
+@app.route('/members', methods=['POST'])
+def add_member():
+    new_member = request.json
+    jackson_family.add_member(new_member)
+    return jsonify(new_member), 201
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
