@@ -21,8 +21,16 @@ class FamilyStructure:
 
     def add_member(self, member):
         # fill this method and update the return
-        member['id'] = member.get('id', self._generateId())
+        id = member.get('id', None)
+        if id != None:
+            for person in self.members:
+                if person.get('id') == id:
+                    return {
+                        'msg' : 'This Id already exists'
+                    }
+        else: member['id'] = self._generateId()
         self._members.append(member)
+        return True
 
     def delete_member(self, id):
         # fill this method and update the return
