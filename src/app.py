@@ -15,27 +15,27 @@ CORS(app)
 # create the jackson family object
 jackson_family = FamilyStructure("Jackson")
 # class Family ():
-Jimmy = {
+John = {
+    "name": "John Jackson",
     "id": jackson_family._generateId(),
-    "name": "Jimmy  Jackson",
+    "age": "33 Years old",
+    "lucky_numbers": [7, 13, 22]
+}
+jackson_family.add_member(John)
+Jane = {
+    "name": "Jane Jackson",
+    "id": jackson_family._generateId(),
+    "age": "35 Years old",
+    "lucky_numbers": [10, 14, 3]
+}
+jackson_family.add_member(Jane)
+Jimmy = {
+    "name": "Jimmy Jackson",
+    "id": jackson_family._generateId(),
     "age": "5 Years old",
     "lucky_numbers": 1
 }
 jackson_family.add_member(Jimmy)
-Jane = {
-    "id": jackson_family._generateId(),
-    "name": "Jane  Jackson",
-    "age": "8 Years old",
-    "lucky_numbers": 5
-}
-jackson_family.add_member(Jane)
-John = {
-    "id": jackson_family._generateId(),
-    "name": "John  Jackson",
-    "age": "7 Years old",
-    "lucky_numbers": 3
-}
-jackson_family.add_member(John)
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
@@ -50,31 +50,29 @@ def sitemap():
 def handle_hello():
     # this is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
-    response_body = {
-        "hello": "world",
-        "family": members
-    }
+    response_body = members
     return jsonify(response_body), 200
 
-@app.route('/members', methods=['POST'])
+@app.route('/member', methods=['POST'])
 def add_member():
     new_member = request.json
+    if new_member['id'] == None:
+        new_member['id'] = jackson_family._generateId()
     jackson_family.add_member(new_member)
-    return jsonify(new_member), 201
+    return 'New member added', 200
 
-
-@app.route('/members/<int:member_id>', methods=['DELETE'])
+@app.route('/member/<int:member_id>', methods=['DELETE'])
 def delete_member(member_id):
     success = jackson_family.delete_member(member_id)
-    return jsonify(success), 200
+    return jsonify({"done" : True}), 200
 
-@app.route('/members/<int:member_id>', methods=['GET'])
+
+@app.route('/member/<int:member_id>', methods=['GET'])
 def get_member(member_id):
     one_member = jackson_family.get_member(member_id)
     return jsonify(one_member), 200
 
     
-
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
